@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <f:view contracts="#{view.locale.language}">
+            <ui:composition template="contracts/#{view.locale.language}/templateRLTC.xhtml">
+                <ui:define name="content">
+                    <h1>#{msg["listCategories.title"]}</h1>
+                    <h:form>
+                        <p:accordionPanel value="#{categories}" var="category"  >                            
+                            <p:ajax event="tabChange" immediate="true" listener="#{listCategoriesController.onTabChange}"  />                           
+                            <p:tab title="#{category.name}" >
+                                
+                                <p:dataTable value="#{category.items}" var="item">
+                                    <p:column>
+                                        <h:outputText>#{item.name}</h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:tab>                           
+                        </p:accordionPanel>
+                    </h:form>
+                </ui:define>
+                <ui:define name="right">
+                    <h:form>
+                        <p:commandButton action="#{listCategoriesController.doAddCategory}" value="#{msg['listCategories.add_new_category']}" onclick="PF('popupNewOrEditCategory').show();"  />
+                        <p:commandButton action="#{listCategoriesController.doEditCategory(category)}" value="#{msg['listCategories.edit_category']}" onclick="PF('popupNewOrEditCategory').show();" />
+                    </h:form>
+                    <p:dialog header="#{msg['listCategories.add_new_category']}" widgetVar="popupNewOrEditCategory" showEffect="scale" hideEffect="fade">
+                        <h:form>
+                            <h:inputText value="#{selectedCategory.name}" id="categoryName">
+                                <f:passThroughAttribute name="placeholder"  value="#{msg['listCategories.newCategoryName']}"/>
+                            </h:inputText>
+                            <p:commandButton ajax="false" value="#{msg['listCategories.save_category']}" action="#{listCategoriesController.doSave}"/>
+                        </h:form>
+                    </p:dialog>
+                </ui:define>
+            </ui:composition>                
+        </f:view>        
+    </body>
+</html>
